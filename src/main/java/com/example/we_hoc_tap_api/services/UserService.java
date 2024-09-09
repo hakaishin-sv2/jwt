@@ -9,6 +9,7 @@ import com.example.we_hoc_tap_api.exception.ErrorCode;
 import com.example.we_hoc_tap_api.mapper.UserMapper;
 import com.example.we_hoc_tap_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toDto(userEntity);
     }
+
     // Lấy danh sách người dùng
     public ApiResponse getAllUsers() {
         List<UserResponse> userResponses = userRepository.findAll().stream()

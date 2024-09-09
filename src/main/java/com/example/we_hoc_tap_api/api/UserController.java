@@ -7,6 +7,8 @@ import com.example.we_hoc_tap_api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -28,6 +30,7 @@ public class UserController {
         UserResponse createdUser = userService.createUser(userRequest);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     // Lấy danh sách người dùng
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> listUser() {
@@ -38,9 +41,12 @@ public class UserController {
     @Autowired
     private JwtDecoder jwtDecoder;
 
+    // Nếu user đang login token hiện tại à username người đang login vào mới tar về
+    @PostAuthorize("returnObject.id == authentication.principal.claims['id']")
     @GetMapping("/infor-user")
-    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestBody Map<String, String> request) {
-        String token = request.get("token");
+    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        // Xử lý token từ header Authorization
+        String token = authorizationHeader.replace("Bearer ", "");
 
         try {
             // Giải mã token
@@ -60,7 +66,6 @@ public class UserController {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid token"));
         }
     }
-
     // Lấy thông tin người dùng theo ID
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {

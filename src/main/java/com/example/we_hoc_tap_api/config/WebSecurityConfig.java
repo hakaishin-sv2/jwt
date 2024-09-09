@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     @NonFinal
@@ -39,7 +40,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST,  "/api/user","/auth/login", "/auth/introspect").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/api/user/infor-user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/user/list").hasAnyAuthority("SCOPE_ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "/api/user/list").hasAnyAuthority("SCOPE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
