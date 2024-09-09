@@ -10,6 +10,7 @@ import com.example.we_hoc_tap_api.mapper.UserMapper;
 import com.example.we_hoc_tap_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,18 @@ public class UserService {
         return userMapper.toDto(userEntity);
     }
 
+    // không cần truyển id
+    public UserResponse getMyInfor() {
+        var context =  SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Tạo đối tượng UserResponse
+        UserResponse userResponse = new UserResponse();
+        userResponse = userMapper.toDto(user);
+        return userResponse;
+    }
     // Lấy danh sách người dùng
     public ApiResponse getAllUsers() {
         List<UserResponse> userResponses = userRepository.findAll().stream()

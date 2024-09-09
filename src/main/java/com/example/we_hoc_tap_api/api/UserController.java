@@ -78,6 +78,16 @@ public class UserController {
         return  null;
     }
 
+    @GetMapping("/show-pro-file")
+    public ResponseEntity<UserResponse> getMyinfor() {
+        UserResponse userDTO = userService.getMyInfor();
+        if (userDTO != null) {
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     // Cập nhật thông tin người dùng
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {

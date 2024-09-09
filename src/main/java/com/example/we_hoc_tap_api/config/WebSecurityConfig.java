@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST,  "/api/user","/auth/login", "/auth/introspect").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/user/infor-user").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/user/infor-user", "api/user//show-pro-file").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/user/list").hasAnyAuthority("SCOPE_ADMIN")
                         .anyRequest().authenticated()
                 )
